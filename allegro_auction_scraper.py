@@ -4,16 +4,25 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import config
 import json
+import re
 
 class AllegroAuctionScraper:
     def __init__(self):
         self.driver = init_selenium()
 
+    def _get_product_price(self):
+        product_price = self.driver.find_element(By.XPATH, config.product_price_selector).text
+        product_price = product_price.split(',')
+        temp_price = product_price[1].split(' ')
+        product_price = '{}.{}'.format(product_price[0], temp_price[0])
+        return float(product_price)
+
     def run_auction_scraper(self, url=None):
         self.driver.get(url)
-        price_selector =
-        test = self.driver.find_element(By.XPATH, price_selector)
-        print('test')
+        product_price = self._get_product_price()
+
+        print(product_price)
+        self.driver.close()
 
         # containers = [
         #     "section#top-card div.content",  # product_image
