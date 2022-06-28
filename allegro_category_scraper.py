@@ -12,11 +12,11 @@ from fake_useragent import UserAgent
 from time import sleep
 
 
-class AllegroScraper:
+class AllegroCategoryScraper:
     def __init__(self):
-        self.driver = self.init_selenium()
+        self.driver = self._init_selenium()
 
-    def save_dict_to_json_file(self, filename, dict):
+    def _save_dict_to_json_file(self, filename, dict):
         with open(filename, 'w') as f:
             json.dump(dict, f, indent=4, ensure_ascii=False)
 
@@ -25,7 +25,7 @@ class AllegroScraper:
             EC.element_to_be_clickable((By.XPATH, path))).click()
 
     #initialize webdriver set settings that allows to hide browser automation
-    def init_selenium(self):
+    def _init_selenium(self):
         try:
             #Temporary version 102.0.5005.61 of chrome is used as the latest version does not work properly
             service = ChromeService(executable_path=ChromeDriverManager(version='102.0.5005.61').install())
@@ -47,7 +47,7 @@ class AllegroScraper:
             print('Error while initializing webdriver')
             print(e)
 
-    def scrape_cat_page(self):
+    def _scrape_cat_page(self):
         """
             scrapes urls and product names from single page.
             Returns data as a dictionary
@@ -95,7 +95,13 @@ class AllegroScraper:
         else:
             return num_of_pages
 
-    def category_scraper(self, cat_url, num_of_pages=5):
+    def run_cat_scraper(self, cat_url, num_of_pages=5):
+        '''
+        Method used to run category scraper and save output to file.
+        :param cat_url: (required)
+        :param num_of_pages: (optional)
+        :return: None. Creates json file with name of the auction as key and url of the auction as value
+        '''
         products = {}
         page_number = 1
         #filter used to sort auctions by number of sold items
@@ -118,13 +124,14 @@ class AllegroScraper:
                 print('timeout error element not found: {}'.format(config.cat_product_selector))
                 print(e)
 
-            products.update(self.scrape_cat_page())
+            products.update(self._scrape_cat_page())
             page_number += 1
+
         self.driver.close()
-        return products
+        self._save_dict_to_json_file('cat_scaper_output.json', products)
 
 
-allegro_scraper = AllegroScraper()
-products = allegro_scraper.category_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003', 2)
+allegro_scraper = AllegroCategoryScraper()
+products = allegro_scraper.run_cat_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003', 2)
 allegro_scraper.save_dict_to_json_file('cat_scraper_output.json', products)
 
