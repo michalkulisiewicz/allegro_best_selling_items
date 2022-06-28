@@ -60,9 +60,10 @@ class AllegroScraper:
             print(e)
             return {}
 
-
     def category_scraper(self, cat_url):
-        #TODO add custom filter to basic url
+        #filter used to sort auctions by number of sold items
+        sort_filter = '?order=qd'
+        cat_url = cat_url + sort_filter
         self.driver.get(cat_url)
         try:
             WebDriverWait(self.driver, .25).until(
@@ -76,6 +77,7 @@ class AllegroScraper:
 
         print(self.scrape_cat_page())
         self.driver.close()
+
 allegro_scraper = AllegroScraper()
-allegro_scraper.category_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003?order=qd')
+allegro_scraper.category_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003')
 
