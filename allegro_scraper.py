@@ -23,7 +23,9 @@ class AllegroScraper:
     #initialize webdriver set settings that allows to hide browser automation
     def init_selenium(self):
         try:
-            service = ChromeService(executable_path=ChromeDriverManager(version="103.0.5060.53").install())
+            #Temporary version 102.0.5005.61 of chrome is used as the latest version does not work properly
+            service = ChromeService(executable_path=ChromeDriverManager(version='102.0.5005.61').install())
+            # service = ChromeService(executable_path='/home/donnie/PycharmProjects/allegro_best_selling_items/chromedriver')
             options = Options()
             options.add_argument('user-data-dir=session')
             # For ChromeDriver version 79.0.3945.16 or over
@@ -41,9 +43,41 @@ class AllegroScraper:
             print('Error while initializing webdriver')
             print(e)
 
-    def scrape_items_from_category(self, cat_url):
-        self.driver.get(cat_url)
-        sleep(15)
+    def scrape_cat_page(self):
+        """
+            scrapes urls and product names from single page.
+            Returns data as a dictionary
+        """
+        cat_product_selector = cat_product_selector = '//*[@class="_w7z6o _uj8z7 meqh_en mpof_z0 mqu1_16 m6ax_n4 _6a66d_LX75-  m7er_k4 msa3_z4"]'
+        try:
+            elems = self.driver.find_elements(By.XPATH, cat_product_selector)
+            products = {}
+            for elem in elems:
+                products[elem.text] = elem.get_attribute('href')
+            return products
 
+        except Exception as e:
+            print('Error acquiring urls and product names from category')
+            print(e)
+            return {}
+
+
+    def category_scraper(self, cat_url):
+        #TODO add custom filter to basic url
+        self.driver.get(cat_url)
+        cat_product_selector = '//*[@class="_w7z6o _uj8z7 meqh_en mpof_z0 mqu1_16 m6ax_n4 _6a66d_LX75-  m7er_k4 msa3_z4"]'
+        try:
+            WebDriverWait(self.driver, .25).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, cat_product_selector)
+                )
+                )
+        except Exception as e:
+            print("timeout error waiting for container to load or element" \
+                  " not found: {}".format(cat_product_selector))
+            print(e)
+        print(self.scrape_cat_page())
+        self.driver.close()
 allegro_scraper = AllegroScraper()
-allegro_scraper.scrape_items_from_category('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003?order=qd')
+allegro_scraper.category_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003?order=qd')
+
