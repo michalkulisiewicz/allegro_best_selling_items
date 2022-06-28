@@ -60,7 +60,7 @@ class AllegroScraper:
             print(e)
             return {}
 
-    def _get_maximum_page_num_from_cat(self):
+    def _get_maximum_num_of_pages_from_cat(self):
         '''
         Function used to find maximum number of available pages to scrape
         :return: int
@@ -78,14 +78,27 @@ class AllegroScraper:
         max_page = self.driver.find_element(By.XPATH, config.cat_max_page_selector).text
         return int(max_page)
 
+    def _check_num_of_pages(self, num_of_pages, maximum_page_number):
+        '''
+        Method checks if user didn't put more pages than it's available to scrape if so scraper will scrape
+        all pages that are available in category.
+        :return: number of pages to be scraped (int)
+        '''
+        if num_of_pages == 'max':
+            return maximum_page_number
+        elif num_of_pages > maximum_page_number:
+            return maximum_page_number
+        else:
+            return num_of_pages
 
-    def category_scraper(self, cat_url, num_of_pages=5):
+    def category_scraper(self, cat_url, num_of_pages='max'):
         page_number = 1
         #filter used to sort auctions by number of sold items
         sort_filter = '?order=qd'
         self.driver.get(cat_url)
-        maximum_page_number = self._get_maximum_page_num_from_cat()
-        print(maximum_page_number)
+        maximum_page_number = self._get_maximum_num_of_pages_from_cat()
+        print('maximum page number to be scraped: {}'.format(maximum_page_number))
+        num_of_pages = self._check_num_of_pages(num_of_pages, maximum_page_number)
         for page in range(num_of_pages):
             page_filter = '&p={}'.format(str(page_number))
             url = cat_url + sort_filter + page_filter
