@@ -62,7 +62,9 @@ class AllegroScraper:
 
     def category_scraper(self, cat_url):
         #filter used to sort auctions by number of sold items
+        page_number = 1
         sort_filter = '?order=qd'
+        page_filter = '&p={}'.format(page_number)
         cat_url = cat_url + sort_filter
         self.driver.get(cat_url)
         try:
