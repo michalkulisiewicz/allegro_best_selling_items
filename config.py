@@ -13,3 +13,5 @@ shipping_price_selector = '//*[@class="_5f9aa_PO2es"]'
 number_of_sold_items_selector = '//*[@class="mp0t_0a mqu1_21 mli8_k4 mgn2_13 mgmw_ag mp4t_8"]'
 #Selector used to get name of the seller
 name_of_the_seller_selector = '//*[@class="mp0t_ji m9qz_yq mgn2_16 mgn2_17_s munh_0 m3h2_0 mp4t_0 mryx_8 mqu1_1j mgmw_wo "]'
+#Selector used to get rating, num of reviews and number of ratings
+product_rating_selector = '//*[@class="mpof_ki mwdn_1"]'
