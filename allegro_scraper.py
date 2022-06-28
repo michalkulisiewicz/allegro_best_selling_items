@@ -60,25 +60,29 @@ class AllegroScraper:
             print(e)
             return {}
 
-    def category_scraper(self, cat_url):
+    def category_scraper(self, cat_url, num_of_pages=5):
         #filter used to sort auctions by number of sold items
         page_number = 1
         sort_filter = '?order=qd'
-        page_filter = '&p={}'.format(page_number)
-        cat_url = cat_url + sort_filter
-        self.driver.get(cat_url)
-        try:
-            WebDriverWait(self.driver, .25).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, config.cat_product_selector)
-                )
-                )
-        except Exception as e:
-            print('timeout error element not found: {}'.format(config.cat_product_selector))
-            print(e)
+        for page in range(num_of_pages):
+            page_filter = '&p={}'.format(str(page_number))
+            url = cat_url + sort_filter + page_filter
+            self.driver.get(url)
+            try:
+                WebDriverWait(self.driver, .25).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, config.cat_product_selector)
+                    )
+                    )
+            except Exception as e:
+                print('timeout error element not found: {}'.format(config.cat_product_selector))
+                print(e)
 
-        print(self.scrape_cat_page())
+            print(self.scrape_cat_page())
+            page_number += 1
+
         self.driver.close()
+
 
 allegro_scraper = AllegroScraper()
 allegro_scraper.category_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003')
