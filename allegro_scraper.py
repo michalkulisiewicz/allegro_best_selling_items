@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 import config
+import json
 from fake_useragent import UserAgent
 from time import sleep
 
@@ -15,6 +16,9 @@ class AllegroScraper:
     def __init__(self):
         self.driver = self.init_selenium()
 
+    def save_dict_to_json_file(self, filename, dict):
+        with open(filename, 'w') as f:
+            json.dump(dict, f, indent=4, ensure_ascii=False)
 
     def wait_and_click(self, path):
         WebDriverWait(self.driver, 10).until(
@@ -91,7 +95,8 @@ class AllegroScraper:
         else:
             return num_of_pages
 
-    def category_scraper(self, cat_url, num_of_pages='max'):
+    def category_scraper(self, cat_url, num_of_pages=5):
+        products = {}
         page_number = 1
         #filter used to sort auctions by number of sold items
         sort_filter = '?order=qd'
@@ -113,12 +118,13 @@ class AllegroScraper:
                 print('timeout error element not found: {}'.format(config.cat_product_selector))
                 print(e)
 
-            print(self.scrape_cat_page())
+            products.update(self.scrape_cat_page())
             page_number += 1
-
         self.driver.close()
+        return products
 
 
 allegro_scraper = AllegroScraper()
-allegro_scraper.category_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003')
+products = allegro_scraper.category_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003', 2)
+allegro_scraper.save_dict_to_json_file('cat_scraper_output.json', products)
 
