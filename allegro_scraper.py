@@ -7,9 +7,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 from fake_useragent import UserAgent
-from fp.fp import FreeProxy
-
 from time import sleep
+
 
 class AllegroScraper:
     def __init__(self):
