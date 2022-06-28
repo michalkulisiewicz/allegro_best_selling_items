@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
+import config
 from fake_useragent import UserAgent
 from time import sleep
 
@@ -47,9 +48,8 @@ class AllegroScraper:
             scrapes urls and product names from single page.
             Returns data as a dictionary
         """
-        cat_product_selector = cat_product_selector = '//*[@class="_w7z6o _uj8z7 meqh_en mpof_z0 mqu1_16 m6ax_n4 _6a66d_LX75-  m7er_k4 msa3_z4"]'
         try:
-            elems = self.driver.find_elements(By.XPATH, cat_product_selector)
+            elems = self.driver.find_elements(By.XPATH, config.cat_product_selector)
             products = {}
             for elem in elems:
                 products[elem.text] = elem.get_attribute('href')
@@ -64,17 +64,16 @@ class AllegroScraper:
     def category_scraper(self, cat_url):
         #TODO add custom filter to basic url
         self.driver.get(cat_url)
-        cat_product_selector = '//*[@class="_w7z6o _uj8z7 meqh_en mpof_z0 mqu1_16 m6ax_n4 _6a66d_LX75-  m7er_k4 msa3_z4"]'
         try:
             WebDriverWait(self.driver, .25).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, cat_product_selector)
+                    (By.XPATH, config.cat_product_selector)
                 )
                 )
         except Exception as e:
-            print("timeout error waiting for container to load or element" \
-                  " not found: {}".format(cat_product_selector))
+            print('timeout error element not found: {}'.format(config.cat_product_selector))
             print(e)
+
         print(self.scrape_cat_page())
         self.driver.close()
 allegro_scraper = AllegroScraper()
