@@ -18,9 +18,12 @@ class AllegroAuctionScraper:
         '''
         product_price = self.driver.find_element(By.XPATH, config.product_price_selector).text
         match = re.match('.\d[,].\d', product_price)
-        match = match.group(0)
-        product_price = match.replace(',', '.')
-        return float(product_price)
+        if match != None:
+            match = match.group(0)
+            product_price = match.replace(',', '.')
+            return float(product_price)
+        else:
+            print('Couldn\'t extract product price')
 
     def _get_shipping_price(self):
         '''
@@ -30,8 +33,11 @@ class AllegroAuctionScraper:
         '''
         shipping_price = self.driver.find_element(By.XPATH, config.shipping_price_selector).text
         match = re.findall('.\d[,].\d', shipping_price)
-        shipping_price = match[0].replace(',', '.')
-        return float(shipping_price)
+        if match != None:
+            shipping_price = match[0].replace(',', '.')
+            return float(shipping_price)
+        else:
+            print('Couldn\'t extract shipping price')
 
     def run_auction_scraper(self, url=None):
         self.driver.get(url)
