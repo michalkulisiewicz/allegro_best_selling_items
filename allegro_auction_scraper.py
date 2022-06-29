@@ -17,7 +17,7 @@ class AllegroAuctionScraper:
         :return: product price (float)
         '''
         product_price = self.driver.find_element(By.XPATH, config.product_price_selector).text
-        match = re.match('.\d[,].\d', product_price)
+        match = re.match('.\d+[,].\d', product_price)
         if match != None:
             match = match.group(0)
             product_price = match.replace(',', '.')
@@ -32,7 +32,7 @@ class AllegroAuctionScraper:
         :return: shipping price (float)
         '''
         shipping_price = self.driver.find_element(By.XPATH, config.shipping_price_selector).text
-        match = re.search('.\d[,].\d', shipping_price)
+        match = re.search('.\d+[,].\d', shipping_price)
         if match != None:
             match = match.group(0)
             shipping_price = match.replace(',', '.')
@@ -40,10 +40,25 @@ class AllegroAuctionScraper:
         else:
             print('Couldn\'t extract shipping price')
 
+    def _get_number_of_sold_items(self):
+        '''
+        Selector returns number of sold items as: '607 osób kupiło'. Method extracts number swaps ',' with '.'
+        return the price as int in order to use it for further calculation
+        :return: number of sold items (int)
+        '''
+        number_of_sold_items = self.driver.find_element(By.XPATH, config.number_of_sold_items_selector).text
+        match = re.match('.\d+', number_of_sold_items)
+        if match != None:
+            match.group(0)
+            number_of_sold_items = match[0].replace(',', '.')
+            return int(number_of_sold_items)
+        else:
+            print('Couldn\'t extract shipping price')
+
     def run_auction_scraper(self, url=None):
         self.driver.get(url)
-        self._get_shipping_price()
-        self._get_number_of_sold_items()
+        test = self._get_number_of_sold_items()
+        print(test)
         # product_price = self._get_product_price()
         # print(product_price)
         # shipping_price = self._get_shipping_price()
