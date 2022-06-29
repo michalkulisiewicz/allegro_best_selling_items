@@ -32,19 +32,22 @@ class AllegroAuctionScraper:
         :return: shipping price (float)
         '''
         shipping_price = self.driver.find_element(By.XPATH, config.shipping_price_selector).text
-        match = re.findall('.\d[,].\d', shipping_price)
+        match = re.search('.\d[,].\d', shipping_price)
         if match != None:
-            shipping_price = match[0].replace(',', '.')
+            match = match.group(0)
+            shipping_price = match.replace(',', '.')
             return float(shipping_price)
         else:
             print('Couldn\'t extract shipping price')
 
     def run_auction_scraper(self, url=None):
         self.driver.get(url)
-        product_price = self._get_product_price()
-        print(product_price)
-        shipping_price = self._get_shipping_price()
-        print(shipping_price)
+        self._get_shipping_price()
+        self._get_number_of_sold_items()
+        # product_price = self._get_product_price()
+        # print(product_price)
+        # shipping_price = self._get_shipping_price()
+        # print(shipping_price)
 
         self.driver.close()
 
