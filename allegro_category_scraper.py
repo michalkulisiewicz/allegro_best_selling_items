@@ -4,8 +4,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import config
 import json
-from fake_useragent import UserAgent
-from time import sleep
 
 
 class AllegroCategoryScraper:
