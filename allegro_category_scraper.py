@@ -22,8 +22,10 @@ class AllegroCategoryScraper:
 
     def _scrape_cat_page(self):
         """
-            scrapes urls and product names from single page.
-            Returns data as a dictionary
+            scrapes urls and product names from a single page.
+            :return: dict
+            Returns data as a dictionary with key as product name and
+            value as  url of the product.
         """
         try:
             elems = self.driver.find_elements(By.XPATH, config.cat_product_selector)
@@ -68,6 +70,19 @@ class AllegroCategoryScraper:
         else:
             return num_of_pages
 
+    def _get_category_id_form_url(self, url):
+        '''
+        Method used to get id of category being scraped in order to
+        use the id as the name of the output file
+        :param url: str
+        :return: int
+        '''
+        category_id = [int(s) for s in url.split('-') if s.isdigit()]
+        if len(category_id) == 1:
+            return category_id[0]
+        else:
+            raise ValueError('Incorrect url for category')
+
     def run_cat_scraper(self, cat_url, num_of_pages=5):
         '''
         Method used to run category scraper and save output to file.
@@ -79,10 +94,12 @@ class AllegroCategoryScraper:
         page_number = 1
         #filter used to sort auctions by number of sold items
         sort_filter = '?order=qd'
+        category_id = self._get_category_id_form_url(cat_url)
+        print('category id being scraped: {}'.format(category_id))
         self.driver.get(cat_url)
         maximum_page_number = self._get_maximum_num_of_pages_from_cat()
-        print('maximum page number to be scraped: {}'.format(maximum_page_number))
         num_of_pages = self._check_num_of_pages(num_of_pages, maximum_page_number)
+        print('number of pages being scraped: {}'.format(num_of_pages))
         for page in range(num_of_pages):
             page_filter = '&p={}'.format(str(page_number))
             url = cat_url + sort_filter + page_filter
@@ -100,9 +117,10 @@ class AllegroCategoryScraper:
             products.update(self._scrape_cat_page())
             page_number += 1
 
+        print(products)
         self.driver.close()
-        self._save_dict_to_json_file('cat_scaper_output.json', products)
+        self._save_dict_to_json_file('{}.json'.format(category_id), products)
 
 
 allegro_scraper = AllegroCategoryScraper()
-products = allegro_scraper.run_cat_scraper('https://allegro.pl/kategoria/bielizna-damska-ponczochy-76003', 1)
+products = allegro_scraper.run_cat_scraper('https://allegro.pl/kategoria/galanteria-i-dodatki-chusty-i-apaszki-15550', 1)
