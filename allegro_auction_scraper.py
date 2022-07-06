@@ -1,7 +1,8 @@
+from selenium.webdriver import Keys
 from webdriver import init_selenium
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
 import config
 import json
 import re
@@ -55,10 +56,36 @@ class AllegroAuctionScraper:
         else:
             print('Couldn\'t extract shipping price')
 
+
+    def _scroll_down_page(self):
+        try:
+                WebDriverWait(self.driver, .25).until(
+                    ec.presence_of_element_located(
+                        (By.TAG_NAME, 'html')
+                    )
+                )
+        except Exception as e:
+            print('timeout error waiting to located element by TAG_NAME: "html"')
+            print(e)
+        page = self.driver.find_element(By.TAG_NAME, 'html')
+        page.send_keys(Keys.PAGE_DOWN)
+        page.send_keys(Keys.PAGE_DOWN)
+
+    def _get_product_img_url(self):
+        """
+        Method obtains url for first image that is available in auction description
+        :return: product_img_url (str)
+        """
+        wait = WebDriverWait(self.driver, 20)
+        image = wait.until(ec.visibility_of_element_located((By.XPATH, config.product_img_selector))).get_attribute('src')
+        return image
+
+
     def run_auction_scraper(self, url=None):
         self.driver.get(url)
-        test = self._get_number_of_sold_items()
-        print(test)
+        self._scroll_down_page()
+        print(self._get_product_img_url())
+        # self._get_name_of_the_seller()
         # product_price = self._get_product_price()
         # print(product_price)
         # shipping_price = self._get_shipping_price()
@@ -86,4 +113,4 @@ class AllegroAuctionScraper:
 
 
 allegro_auction_scraper = AllegroAuctionScraper()
-allegro_auction_scraper.run_auction_scraper('https://allegro.pl/oferta/biustonosz-samonosny-push-up-bez-ramiaczek-oslonki-10852424622')
+allegro_auction_scraper.run_auction_scraper('https://allegro.pl/oferta/bandana-bandamka-chusta-oddychajaca-czarna-meska-10182306603?bi_s=ads&bi_m=listing:desktop:category&bi_c=N2FlYTIxM2MtMjQ5MC00MGNiLTgzM2QtYWI3ZTM3ZjBlOTJlAA&bi_t=ape&referrer=proxy&emission_unit_id=32a9d685-2f25-49b5-8626-aea235895459')
