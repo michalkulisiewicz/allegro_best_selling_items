@@ -4,14 +4,20 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import config
 import json
+from pathlib import Path
+import os
 
 
 class AllegroCategoryScraper:
     def __init__(self):
         self.driver = init_selenium()
 
+    def _create_output_directory(self):
+        Path('category_scraper_output').mkdir(parents=True, exist_ok=True)
+
     def _save_dict_to_json_file(self, filename, dict):
-        with open(filename, 'w') as f:
+        self._create_output_directory()
+        with open(os.path.join('category_scraper_output', filename), 'w') as f:
             json.dump(dict, f, indent=4, ensure_ascii=False)
 
     def wait_and_click(self, path):
