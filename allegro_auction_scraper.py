@@ -71,6 +71,18 @@ class AllegroAuctionScraper:
         page.send_keys(Keys.PAGE_DOWN)
         page.send_keys(Keys.PAGE_DOWN)
 
+
+    def _get_name_of_the_seller(self):
+        """
+        Selector returns seller name as: 'od name_of_the_seller'. Method splits string to extract
+        just the name of the seller
+        :return: name_of_the_seller (str)
+        """
+        name_of_the_seller = self.driver.find_element(By.XPATH, config.name_of_the_seller_selector).text
+        name_of_the_seller = name_of_the_seller.split(' ')
+        return name_of_the_seller[-1]
+
+
     def _get_product_img_url(self):
         """
         Method obtains url for first image that is available in auction description
