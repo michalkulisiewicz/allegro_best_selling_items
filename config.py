@@ -20,3 +20,5 @@ name_of_the_seller_selector = '//*[@class="mp0t_ji m9qz_yq mgn2_16 mgn2_17_s mun
 product_rating_selector = '//*[@class="mpof_ki mwdn_1"]'
 #Selector used to get first image of product from auction
 product_img_selector = '//*[@class="msub_k4 mupj_5k mjru_k4 mse2_k4 mp7g_f6 mq1m_0 mj7u_0 m7er_k4 lazyloaded"]'
+#Selector used to get a number of auction being scraped from
+auction_number_selector = '//*[@class="mgn2_14 mp0t_0a mqu1_21 mgmw_wo mli8_k4 mp4t_0 m3h2_0 munh_0 mryx_16 _5b60e_OlIZ- " and contains(text(), "Numer oferty:")]'
