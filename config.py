@@ -11,7 +11,7 @@ cat_max_page_selector = '//*[@class="_1h7wt mh36_8 mvrt_8 _6d89c_3i0GV _6d89c_XE
 #Selector used to get price of product
 product_price_selector = '//*[@class="mli8_k4 msa3_z4 mqu1_1 mp0t_ji m9qz_yo mgmw_qw mgn2_27 mgn2_30_s mpof_vs munh_8 mp4t_4"]'
 #Selector used to get shipping price of product
-shipping_price_selector = '(//*[@class="_5f9aa_PO2es"])[3]'
+shipping_price_selector = '//*[@class="_5f9aa_PO2es" and contains(text(), "Dostawa")]'
 #Selector used to get number of sold items
 number_of_sold_items_selector = '//*[@class="mp0t_0a mqu1_21 mli8_k4 mgn2_13 mgmw_ag mp4t_8"]'
 #Selector used to get name of the seller
