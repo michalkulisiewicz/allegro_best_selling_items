@@ -19,6 +19,10 @@ class AllegroAuctionScraper:
         category_num = filename.split('.')[0]
         return int(category_num)
 
+    def _save_to_json_file(self, filename, input):
+        with open(filename, 'w') as f:
+            json.dump(input, f, indent=4, ensure_ascii=False)
+
     def _read_auctions_from_json(self):
         file_list = list(Path('category_scraper_output').glob("*.json"))
         auctions = {}
@@ -129,6 +133,7 @@ class AllegroAuctionScraper:
                 self.driver.get(auction_url)
                 print('Scraping auction from url: {}'.format(auction_url))
                 self._scroll_down_page()
+                auction['url'] = auction_url
                 auction['product_price'] = self._get_product_price()
                 auction['shipping_price'] = self._get_shipping_price()
                 auction['name_of_the_seller'] = self._get_name_of_the_seller()
@@ -136,6 +141,7 @@ class AllegroAuctionScraper:
                 auction['product_img_url'] = self._get_product_img_url()
                 auction['auction_number'] = self._get_auction_number()
                 scraped_auctions.append(auction)
+        self._save_to_json_file('test.json', scraped_auctions)
         self.driver.close()
 
         # self.driver.get(url)
