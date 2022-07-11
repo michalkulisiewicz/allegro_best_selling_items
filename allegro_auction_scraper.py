@@ -127,9 +127,13 @@ class AllegroAuctionScraper:
         Method obtains url for first image that is available in auction description
         :return: product_img_url (str)
         """
-        wait = WebDriverWait(self.driver, 20)
-        image = wait.until(ec.visibility_of_element_located((By.XPATH, config.product_img_selector))).get_attribute('src')
-        return image
+        try:
+            wait = WebDriverWait(self.driver, 20)
+            image = wait.until(ec.visibility_of_element_located((By.XPATH, config.product_img_selector))).get_attribute('src')
+            return image
+        except TimeoutException as e:
+            print('timeout error waiting to located element by XPATH: {}'.format(config.product_img_selector))
+            print(e)
 
     def _get_auction_number(self):
         """
@@ -138,9 +142,13 @@ class AllegroAuctionScraper:
         :return: auction number (int)
         """
         try:
-            auction_number_output = self.driver.find_element(By.XPATH, config.auction_number_selector).text
-            auction_number = self._extract_digits_from_string(auction_number_output)
+            wait = WebDriverWait(self.driver, 20)
+            auction_number = wait.until(ec.visibility_of_element_located((By.XPATH, config.auction_number_selector))).text
+            auction_number = self._extract_digits_from_string(auction_number)
             return auction_number
+        except TimeoutException as e:
+            print('timeout error waiting to located element by XPATH: {}'.format(config.auction_number_selector))
+            print(e)
 
     def run_auction_scraper(self, url=None):
         auctions_from_json = self._read_auctions_from_json()
