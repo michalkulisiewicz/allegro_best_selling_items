@@ -1,3 +1,4 @@
+from selenium.common import TimeoutException
 from selenium.webdriver import Keys
 from webdriver import init_selenium
 from selenium.webdriver.common.by import By
@@ -36,17 +37,13 @@ class AllegroAuctionScraper:
 
     def _scroll_down_page(self):
         try:
-            WebDriverWait(self.driver, 1).until(
-                ec.presence_of_element_located(
-                    (By.TAG_NAME, 'html')
-                )
-            )
-        except Exception as e:
-            print('timeout error waiting to located element by TAG_NAME: "html"')
+            wait = WebDriverWait(self.driver, 20)
+            page = wait.until(ec.visibility_of_element_located((By.TAG_NAME, 'html')))
+            page.send_keys(Keys.PAGE_DOWN)
+            page.send_keys(Keys.PAGE_DOWN)
+        except TimeoutException as e:
+            print('timeout error waiting to located element by TAG_NAME: "html", could not to scroll down a page')
             print(e)
-        page = self.driver.find_element(By.TAG_NAME, 'html')
-        page.send_keys(Keys.PAGE_DOWN)
-        page.send_keys(Keys.PAGE_DOWN)
 
     def _get_product_price(self):
         '''
