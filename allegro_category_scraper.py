@@ -127,4 +127,4 @@ class AllegroCategoryScraper:
 
 
 allegro_scraper = AllegroCategoryScraper()
-products = allegro_scraper.run_cat_scraper('https://allegro.pl/kategoria/galanteria-i-dodatki-chusty-i-apaszki-15550', 1)
+products = allegro_scraper.run_cat_scraper('https://allegro.pl/kategoria/bielizna-meska-kapielowki-256927', 1)

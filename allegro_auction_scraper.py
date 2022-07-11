@@ -71,14 +71,19 @@ class AllegroAuctionScraper:
         return the price as a float in order to use it for further calculation
         :return: shipping price (float)
         """
-        shipping_price = self.driver.find_element(By.XPATH, config.shipping_price_selector).text
-        match = re.search('.\d+[,].\d', shipping_price)
-        if match != None:
-            match = match.group(0)
-            shipping_price = match.replace(',', '.')
-            return float(shipping_price)
-        else:
-            print('Couldn\'t extract shipping price')
+        try:
+            wait = WebDriverWait(self.driver, 20)
+            shipping_price = wait.until(ec.visibility_of_element_located((By.XPATH, config.shipping_price_selector))).text
+            match = re.search('.\d+[,].\d', shipping_price)
+            if match != None:
+                match = match.group(0)
+                shipping_price = match.replace(',', '.')
+                return float(shipping_price)
+            else:
+                print('Couldn\'t extract shipping price')
+        except TimeoutException as e:
+            print('timeout error waiting to located element by XPATH: {}'.format(config.product_price_selector))
+            print(e)
 
     def _get_number_of_sold_items(self):
         '''
