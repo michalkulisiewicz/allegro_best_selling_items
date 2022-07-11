@@ -91,14 +91,19 @@ class AllegroAuctionScraper:
         return the price as int in order to use it for further calculation
         :return: number of sold items (int)
         '''
-        number_of_sold_items = self.driver.find_element(By.XPATH, config.number_of_sold_items_selector).text
-        match = re.match('.\d+', number_of_sold_items)
-        if match != None:
-            match.group(0)
-            number_of_sold_items = match[0].replace(',', '.')
-            return int(number_of_sold_items)
-        else:
-            print('Couldn\'t extract shipping price')
+        try:
+            wait = WebDriverWait(self.driver, 20)
+            number_of_sold_items = wait.until(ec.visibility_of_element_located((By.XPATH, config.number_of_sold_items_selector))).text
+            match = re.match('.\d+', number_of_sold_items)
+            if match != None:
+                match.group(0)
+                number_of_sold_items = match[0].replace(',', '.')
+                return int(number_of_sold_items)
+            else:
+                print('Couldn\'t extract shipping price')
+        except TimeoutException as e:
+            print('timeout error waiting to located element by XPATH: {}'.format(config.product_price_selector))
+            print(e)
 
 
     def _get_name_of_the_seller(self):
