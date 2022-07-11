@@ -102,7 +102,7 @@ class AllegroAuctionScraper:
             else:
                 print('Couldn\'t extract shipping price')
         except TimeoutException as e:
-            print('timeout error waiting to located element by XPATH: {}'.format(config.product_price_selector))
+            print('timeout error waiting to located element by XPATH: {}'.format(config.number_of_sold_items_selector))
             print(e)
 
 
@@ -112,9 +112,14 @@ class AllegroAuctionScraper:
         just the name of the seller
         :return: name_of_the_seller (str)
         """
-        name_of_the_seller = self.driver.find_element(By.XPATH, config.name_of_the_seller_selector).text
-        name_of_the_seller = name_of_the_seller.split(' ')
-        return name_of_the_seller[-1]
+        try:
+            wait = WebDriverWait(self.driver, 20)
+            name_of_the_seller = wait.until(ec.visibility_of_element_located((By.XPATH, config.name_of_the_seller_selector))).text
+            name_of_the_seller = name_of_the_seller.split(' ')
+            return name_of_the_seller[-1]
+        except TimeoutException as e:
+            print('timeout error waiting to located element by XPATH: {}'.format(config.name_of_the_seller_selector))
+            print(e)
 
 
     def _get_product_img_url(self):
@@ -132,9 +137,10 @@ class AllegroAuctionScraper:
         and returns as an integer
         :return: auction number (int)
         """
-        auction_number_output = self.driver.find_element(By.XPATH, config.auction_number_selector).text
-        auction_number = self._extract_digits_from_string(auction_number_output)
-        return auction_number
+        try:
+            auction_number_output = self.driver.find_element(By.XPATH, config.auction_number_selector).text
+            auction_number = self._extract_digits_from_string(auction_number_output)
+            return auction_number
 
     def run_auction_scraper(self, url=None):
         auctions_from_json = self._read_auctions_from_json()
