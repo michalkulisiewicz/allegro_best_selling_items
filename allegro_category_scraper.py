@@ -3,22 +3,14 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import config
-import json
-from pathlib import Path
-import os
+import utils
+from utils import save_output_to_json_file
+
 
 
 class AllegroCategoryScraper:
     def __init__(self):
         self.driver = init_selenium()
-
-    def _create_output_directory(self):
-        Path('category_scraper_output').mkdir(parents=True, exist_ok=True)
-
-    def _save_dict_to_json_file(self, filename, dict):
-        self._create_output_directory()
-        with open(os.path.join('category_scraper_output', filename), 'w') as f:
-            json.dump(dict, f, indent=4, ensure_ascii=False)
 
     def wait_and_click(self, path):
         WebDriverWait(self.driver, 10).until(
@@ -123,8 +115,8 @@ class AllegroCategoryScraper:
 
         print(products)
         self.driver.close()
-        self._save_dict_to_json_file('{}.json'.format(category_id), products)
+        save_output_to_json_file('category_scraper_output', '{}.json'.format(category_id), products)
 
 
 allegro_scraper = AllegroCategoryScraper()
-products = allegro_scraper.run_cat_scraper('https://allegro.pl/kategoria/bielizna-meska-kapielowki-256927', 1)
+products = allegro_scraper.run_cat_scraper('https://allegro.pl/kategoria/damskie-sandaly-5540', 1)

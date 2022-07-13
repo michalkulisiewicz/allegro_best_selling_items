@@ -4,10 +4,12 @@ from webdriver import init_selenium
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+from utils import save_output_to_json_file
 import config
-import json
 import re
 from pathlib import Path
+import json
+
 
 class AllegroAuctionScraper:
     def __init__(self):
@@ -19,10 +21,6 @@ class AllegroAuctionScraper:
     def _extract_cat_num_from_filename(self, filename):
         category_num = filename.split('.')[0]
         return int(category_num)
-
-    def _save_to_json_file(self, filename, input):
-        with open(filename, 'w') as f:
-            json.dump(input, f, indent=4, ensure_ascii=False)
 
     def _read_auctions_from_json(self):
         file_list = list(Path('category_scraper_output').glob("*.json"))
@@ -155,8 +153,8 @@ class AllegroAuctionScraper:
 
     def run_auction_scraper(self):
         auctions_from_json = self._read_auctions_from_json()
-        scraped_auctions = []
         for cat_num, auction_dict in auctions_from_json.items():
+            scraped_auctions = []
             for auction_name, auction_url in auction_dict.items():
                 auction = {}
                 self.driver.get(auction_url)
@@ -170,5 +168,5 @@ class AllegroAuctionScraper:
                 auction['product_img_url'] = self._get_product_img_url()
                 auction['auction_number'] = self._get_auction_number()
                 scraped_auctions.append(auction)
-        self._save_to_json_file('test.json', scraped_auctions)
+            save_output_to_json_file('auction_scraper_output', '{}.json'.format(cat_num), scraped_auctions)
         self.driver.close()
