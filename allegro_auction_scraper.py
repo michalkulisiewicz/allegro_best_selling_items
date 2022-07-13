@@ -4,7 +4,7 @@ from webdriver import init_selenium
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
-from utils import save_output_to_json_file
+from utils import save_output_to_json_file, read_auctions_from_json
 import config
 import re
 from pathlib import Path
@@ -17,21 +17,6 @@ class AllegroAuctionScraper:
 
     def _extract_digits_from_string(self, string):
         return [int(s) for s in string.split() if s.isdigit()][0]
-
-    def _extract_cat_num_from_filename(self, filename):
-        category_num = filename.split('.')[0]
-        return int(category_num)
-
-    def _read_auctions_from_json(self):
-        file_list = list(Path('category_scraper_output').glob("*.json"))
-        auctions = {}
-        for file in file_list:
-            cat_num = self._extract_cat_num_from_filename(file.name)
-            with open(file, 'r') as f:
-                json_file = json.load(f)
-                auctions[cat_num] = json_file
-        return auctions
-
 
     def _scroll_down_page(self):
         """
@@ -152,7 +137,7 @@ class AllegroAuctionScraper:
             print(e)
 
     def run_auction_scraper(self):
-        auctions_from_json = self._read_auctions_from_json()
+        auctions_from_json = read_auctions_from_json()
         for cat_num, auction_dict in auctions_from_json.items():
             scraped_auctions = []
             for auction_name, auction_url in auction_dict.items():
