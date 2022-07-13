@@ -36,21 +36,24 @@ class AllegroAuctionScraper:
 
 
     def _scroll_down_page(self):
+        """
+        Method used to scroll into view of description in order to load product image needed for further scraping.
+        """
         try:
             wait = WebDriverWait(self.driver, 20)
-            page = wait.until(ec.visibility_of_element_located((By.TAG_NAME, 'html')))
-            page.send_keys(Keys.PAGE_DOWN)
-            page.send_keys(Keys.PAGE_DOWN)
+            description = wait.until(ec.presence_of_element_located((By.XPATH, config.description_selector)))
+            #Execute javascript to scroll page in order to load nedded elements
+            self.driver.execute_script("arguments[0].scrollIntoView();", description)
         except TimeoutException as e:
-            print('timeout error waiting to located element by TAG_NAME: "html", could not to scroll down a page')
+            print('Timeout error, could not to scroll down a page')
             print(e)
 
     def _get_product_price(self):
-        '''
+        """
         Selector returns price as: '18,98 zł'. Method extracts price swaps ',' with '.'
         return the price as a float in order to use it for further calculation
         :return: product price (float)
-        '''
+        """
         try:
             wait = WebDriverWait(self.driver, 20)
             product_price = wait.until(ec.visibility_of_element_located((By.XPATH, config.product_price_selector))).text
@@ -150,7 +153,7 @@ class AllegroAuctionScraper:
             print('timeout error waiting to located element by XPATH: {}'.format(config.auction_number_selector))
             print(e)
 
-    def run_auction_scraper(self, url=None):
+    def run_auction_scraper(self):
         auctions_from_json = self._read_auctions_from_json()
         scraped_auctions = []
         for cat_num, auction_dict in auctions_from_json.items():
@@ -160,23 +163,12 @@ class AllegroAuctionScraper:
                 print('Scraping auction from url: {}'.format(auction_url))
                 self._scroll_down_page()
                 auction['url'] = auction_url
+                auction['name_of_the_seller'] = self._get_name_of_the_seller()
                 auction['product_price'] = self._get_product_price()
                 auction['shipping_price'] = self._get_shipping_price()
-                auction['name_of_the_seller'] = self._get_name_of_the_seller()
                 auction['number_of_sold_items'] = self._get_number_of_sold_items()
                 auction['product_img_url'] = self._get_product_img_url()
                 auction['auction_number'] = self._get_auction_number()
                 scraped_auctions.append(auction)
         self._save_to_json_file('test.json', scraped_auctions)
         self.driver.close()
-
-        # self.driver.get(url)
-        # self._scroll_down_page()
-        #
-        # self.driver.close()
-
-
-
-
-allegro_auction_scraper = AllegroAuctionScraper()
-allegro_auction_scraper.run_auction_scraper('https://allegro.pl/oferta/bandana-bandamka-chusta-oddychajaca-czarna-meska-10182306603?bi_s=ads&bi_m=listing:desktop:category&bi_c=N2FlYTIxM2MtMjQ5MC00MGNiLTgzM2QtYWI3ZTM3ZjBlOTJlAA&bi_t=ape&referrer=proxy&emission_unit_id=32a9d685-2f25-49b5-8626-aea235895459')
