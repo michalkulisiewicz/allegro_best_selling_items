@@ -18,6 +18,8 @@ number_of_sold_items_selector = '//*[@class="mp0t_0a mqu1_21 mli8_k4 mgn2_13 mgm
 name_of_the_seller_selector = '//*[@class="mp0t_ji m9qz_yq mgn2_16 mgn2_17_s munh_0 m3h2_0 mp4t_0 mryx_8 mqu1_1j mgmw_wo "]'
 #Selector used to get rating, num of reviews and number of ratings
 product_rating_selector = '//*[@class="mpof_ki mwdn_1"]'
+#Selector used to get description element needed for further scraping
+description_selector = '//*[@class="mp0t_ji munh_0 m3h2_0 mqu1_1j mgn2_21 mgn2_25_s m9qz_yo mryx_16 mgmw_wo mp4t_0 msts_n7" and contains(text(),"Opis")]'
 #Selector used to get first image of product from auction
 product_img_selector = '//*[@class="msub_k4 mupj_5k mjru_k4 mse2_k4 mp7g_f6 mq1m_0 mj7u_0 m7er_k4 lazyloaded"]'
 #Selector used to get a number of auction being scraped from
