@@ -1,7 +1,8 @@
 from webdriver import init_selenium
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.common import TimeoutException
 import config
 import utils
 from utils import save_output_to_json_file
@@ -12,23 +13,40 @@ class AllegroCategoryScraper:
     def __init__(self):
         self.driver = init_selenium()
 
-    def wait_and_click(self, path):
-        WebDriverWait(self.driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, path))).click()
+    #def wait_and_click(self, path):
+        #WebDriverWait(self.driver, 10).until(
+           # EC.element_to_be_clickable((By.XPATH, path))).click()
+
+    def _toggle_view(self):
+        """
+        Method used to toggle view of a list of auctions in category.
+        Default view makes it harder to scrape images from auction.
+        """
+        try:
+            wait = WebDriverWait(self.driver, 5)
+            wait.until(ec.presence_of_element_located((By.XPATH, config.cat_toggle_view_selector))).click()
+        except TimeoutException:
+            pass
+
 
     def _scrape_cat_page(self):
         """
-            scrapes urls and product names from a single page.
-            :return: dict
-            Returns data as a dictionary with key as product name and
-            value as  url of the product.
+        scrapes urls and product names from a single page.
+        :return: dict
+        Returns data as a dictionary with key as product name and
+        value as  url of the product.
         """
         try:
-            elems = self.driver.find_elements(By.XPATH, config.cat_product_selector)
-            products = {}
-            for elem in elems:
-                products[elem.text] = elem.get_attribute('href')
-            return products
+            self._toggle_view()
+            products = self.driver.find_elements(By.XPATH, config.cat_product_selector)
+            auctions = {}
+            for product in products:
+                name = product.text
+                url = product.get_attribute('href')
+                # Ommits the special promoted products
+                if 'clicks?emission_unit' not in url:
+                    auctions[name] = url
+            return auctions
 
         except Exception as e:
             print('Error acquiring urls and product names from category')
@@ -79,7 +97,7 @@ class AllegroCategoryScraper:
         else:
             raise ValueError('Incorrect url for category')
 
-    def run_cat_scraper(self, cat_url, num_of_pages=5):
+    def run_cat_scraper(self, cat_url, num_of_pages=1):
         '''
         Method used to run category scraper and save output to file.
         :param cat_url: (required)
@@ -100,23 +118,8 @@ class AllegroCategoryScraper:
             page_filter = '&p={}'.format(str(page_number))
             url = cat_url + sort_filter + page_filter
             self.driver.get(url)
-            try:
-                WebDriverWait(self.driver, .25).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, config.cat_product_selector)
-                    )
-                    )
-            except Exception as e:
-                print('timeout error element not found: {}'.format(config.cat_product_selector))
-                print(e)
-
             products.update(self._scrape_cat_page())
             page_number += 1
 
-        print(products)
         self.driver.close()
         save_output_to_json_file('category_scraper_output', '{}.json'.format(category_id), products)
-
-
-allegro_scraper = AllegroCategoryScraper()
-products = allegro_scraper.run_cat_scraper('https://allegro.pl/kategoria/damskie-sandaly-5540', 1)
