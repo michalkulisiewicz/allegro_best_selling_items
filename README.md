@@ -137,7 +137,8 @@ google_sheet.add_items_to_worksheet(auction_scraper_output)
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/michalkulisiewicz/allegro_best_selling_items. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/michalkulisiewicz/python-baselinker/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at
+https://github.com/michalkulisiewicz/allegro_best_selling_items. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/michalkulisiewicz/python-baselinker/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
