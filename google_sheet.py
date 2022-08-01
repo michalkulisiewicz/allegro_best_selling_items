@@ -2,7 +2,6 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import date
 from gspread_formatting import *
-import time
 
 class GoogleSheet():
     def __init__(self, json_keyfile_name, sheet_name):
