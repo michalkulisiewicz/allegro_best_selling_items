@@ -5,7 +5,7 @@ given category, saves output as json and creates report of best-selling items
 in Google Sheets. Use responsibly.
 
 ## Report preview
-<img src="https://github.com/michalkulisiewicz/allegro_best_selling_items/blob/master/report_preview.png" width="400"/>
+![Screenshot](report_preview.png)
 
 ## Preparation
 In order to use Google Sheets to create reports from scraper
@@ -132,8 +132,8 @@ google_sheet = GoogleSheet('SECRET_FILENAME', 'GOOGLE_SHEET_WORKBOOK_NAME')
 google_sheet.add_items_to_worksheet(auction_scraper_output)
 ```
 **Output:**
-<img src="https://github.com/michalkulisiewicz/allegro_best_selling_items/blob/master/report_preview.png" width="400"/>
 
+![Screenshot](report_preview.png)
 
 ## Contributing
 
