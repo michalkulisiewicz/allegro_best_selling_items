@@ -112,7 +112,7 @@ class AllegroCategoryScraper:
         :return product price (float)
         """
         match = re.match('\d+[,].\d', product_price)
-        if match != None:
+        if match is not None:
             match = match.group(0)
             product_price = match.replace(',', '.')
             return float(product_price)
@@ -121,10 +121,9 @@ class AllegroCategoryScraper:
 
     def _get_product_price(self, product):
         raw_product_price = product.find('span',
-                            class_='mli8_k4 msa3_z4 mqu1_1 mgmw_qw mp0t_ji m9qz_yo mgn2_27 mgn2_30_s').get_text()
+                                         class_='mli8_k4 msa3_z4 mqu1_1 mgmw_qw mp0t_ji m9qz_yo mgn2_27 mgn2_30_s').get_text()
         product_price = self._parse_price(raw_product_price)
         return product_price
-
 
     def _get_product_shipping_price(self, product, product_price):
         raw_product_price_with_shipping = product.find('div', class_='mqu1_g3 mgn2_12').get_text()
