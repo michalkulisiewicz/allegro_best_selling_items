@@ -1,48 +1,64 @@
-<img src="https://meblujdom.pl/img/cms/thumbnails/46.jpg" width="400"/>
+# Allegro Best Selling Items
+
+<img src="misc/logo.jpg" width="400"/>
 
 allegro.pl scraper based on selenium framework that scrapes auctions from 
 given category, saves output as json and creates report of best-selling items
 in Google Sheets. Use responsibly.
 
-## Report preview
-![Screenshot](report_preview.png)
+## Table of contents
+- [Prerequisites](#prerequisites)
+  - [Chrome browser version](#chrome-browser-version)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Quickstart](#quickstart)
+  - [Category scraper](#category-scraper)
+  - [Google sheet report creator](#google-sheet-report-creator)
+- [Contributing](#contributing)
+- [License](#license)
+- [Code of Conduct](#code-of-conduct)
 
-## Preparation
+## Prerequisites
 In order to use Google Sheets to create reports from scraper
 you have to obtain json key credentials file.
 
 Follow the steps:
 
-1. Create spreadsheet: [here](https://youtu.be/wrR0YLzh4DQ?t=44)
-2. Enable Google Drive & Sheets API: [here](https://youtu.be/wrR0YLzh4DQ?t=85)
-3. Creating a Service Account: [here](https://youtu.be/wrR0YLzh4DQ?t=186)
-4. Save obtained json file inside of project root directory
+1. Create spreadsheet: [here](https://youtu.be/wrR0YLzh4DQ?t=44).
+2. Enable Google Drive & Sheets API: [here](https://youtu.be/wrR0YLzh4DQ?t=85).
+3. Creating a Service Account: [here](https://youtu.be/wrR0YLzh4DQ?t=186).
+4. Save obtained json file inside of project root directory.
 
-## Chrome browser version
+### Chrome browser version
 Recommended version of Chrome browser and Chrome driver is: 102.0.5005.61
 at the time of release the script, selenium does not work well with Chrome version 103
 issues were fixed in version 104 and once that version will be released as stable
 it is possible to use it after changing "chrome_driver_version" variable inside of config.py file.
-Remember that chrome driver version must be the same as chrome browser version installed on your system.
+Remember that chrome driver version must be the same as Chrome browser version installed on your system.
 
 ## Installation
 
-Use git clone to get the script
-```
+Use git clone to get the script:
+
+```shell
 git clone git@github.com:michalkulisiewicz/allegro_best_selling_items.git
 ```
 
-Install all requirements using pip
-```python
+Install all requirements using pip:
+
+```shell
 pip install -r requirements.txt
 ```
 
-## Quickstart
+
+## Usage
+
+### Quickstart
 
 ```python
-from google_sheet import GoogleSheet
-from allegro_category_scraper import AllegroCategoryScraper
-from utils import read_auctions_from_json
+from allegro_best_selling_items.google_sheet import GoogleSheet
+from allegro_best_selling_items.allegro_category_scraper import AllegroCategoryScraper
+from allegro_best_selling_items.utils import read_auctions_from_json
 
 
 def run_category_scraper(category_url, num_of_pages=1):
@@ -76,14 +92,12 @@ if __name__ == '__main__':
 
 ```
 
-# Usage
 ### Category scraper
 
 Creates json file where filename is "id" of category that was scraped
 
 ```python
-from allegro_category_scraper import AllegroCategoryScraper
-
+from allegro_best_selling_items.allegro_category_scraper import AllegroCategoryScraper
 
 category_scraper = AllegroCategoryScraper()
 category_scraper.run_cat_scraper('https://allegro.pl/kategoria/obuwie-damskie-531', 1)
@@ -121,11 +135,11 @@ category_scraper.run_cat_scraper('https://allegro.pl/kategoria/obuwie-damskie-53
 ```
 
 ### Google sheet report creator
-Create reports for every json file inside of category_scraper_output directory 
+Create reports for every json file inside of category_scraper_output directory:
 
 ```python
-from google_sheet import GoogleSheet
-from utils import read_auctions_from_json
+from allegro_best_selling_items.google_sheet import GoogleSheet
+from allegro_best_selling_items.utils import read_auctions_from_json
 
 auction_scraper_output = read_auctions_from_json('category_scraper_output')
 google_sheet = GoogleSheet('SECRET_FILENAME', 'GOOGLE_SHEET_WORKBOOK_NAME')
@@ -133,7 +147,7 @@ google_sheet.add_items_to_worksheet(auction_scraper_output)
 ```
 **Output:**
 
-![Screenshot](report_preview.png)
+![Screenshot](misc/report_preview.png)
 
 ## Contributing
 

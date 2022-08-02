@@ -3,13 +3,15 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import date
 from gspread_formatting import *
 
-class GoogleSheet():
+
+class GoogleSheet:
     def __init__(self, json_keyfile_name, sheet_name):
         self.worksheet = None
         self.sheet_name = sheet_name
         self.worksheet_total_rows = None
         self.worksheet_total_columns = 6
-        self.scope = ["https://spreadsheets.google.com/feeds",'https://www.googleapis.com/auth/spreadsheets',"https://www.googleapis.com/auth/drive.file","https://www.googleapis.com/auth/drive"]
+        self.scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
+                      "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
         self.creds = ServiceAccountCredentials.from_json_keyfile_name(json_keyfile_name, self.scope)
         self.client = gspread.authorize(self.creds)
         self.sheet = self.client.open(self.sheet_name)
@@ -90,7 +92,7 @@ class GoogleSheet():
 
     def add_items_to_worksheet(self, auction_dict):
         for category_id, auction_list in auction_dict.items():
-            self.worksheet_total_rows =len(auction_list)
+            self.worksheet_total_rows = len(auction_list)
             self.create_worksheet(str(category_id), len(auction_list) + 2)
             self.batch_update_rows(auction_list)
 
