@@ -1,8 +1,8 @@
-from webdriver import init_selenium
+from allegro_best_selling_items.selenium.webdriver import init_selenium
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.common import TimeoutException
-import config
+from allegro_best_selling_items.selenium import config
 import utils
 from selenium.webdriver.support.ui import WebDriverWait
 from bs4 import BeautifulSoup

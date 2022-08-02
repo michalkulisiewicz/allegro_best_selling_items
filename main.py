@@ -1,6 +1,6 @@
-from google_sheet import GoogleSheet
-from allegro_category_scraper import AllegroCategoryScraper
-from utils import read_auctions_from_json
+from allegro_best_selling_items.google_sheet import GoogleSheet
+from allegro_best_selling_items.allegro_category_scraper import AllegroCategoryScraper
+from allegro_best_selling_items.utils import read_auctions_from_json
 
 
 def run_category_scraper(category_url, num_of_pages=1):
