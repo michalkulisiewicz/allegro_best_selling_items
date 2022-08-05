@@ -41,7 +41,7 @@ Remember that chrome driver version must be the same as Chrome browser version i
 Use git clone to get the script:
 
 ```shell
-git clone git@github.com:michalkulisiewicz/allegro_best_selling_items.git
+git clone https://github.com/michalkulisiewicz/allegro_best_selling_items.git
 ```
 
 Install all requirements using pip:
